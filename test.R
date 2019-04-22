@@ -51,7 +51,7 @@ draft_2010 <- draft_data_full$`2010` %>%
            position == "PK") %>% 
   mutate(player_name = paste(fname, lname, sep = " "),
          player_pick = row_number()) %>% 
-  select(player_name, team, position, player_pick)
+  select(player_name, team, position, player_pick, year)
 
 draft_function("2010")
 
