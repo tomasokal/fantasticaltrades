@@ -66,7 +66,7 @@ draft_2008 <- draft_data_full$`2008` %>%
            position == "PK") %>% 
   mutate(player_name = paste(fname, lname, sep = " "),
          player_pick = row_number()) %>% 
-  select(player_name, team, position, player_pick)
+  select(player_name, team, position, player_pick, year)
 draft_2009 <- draft_data_full$`2009` %>% 
   mutate(year = 2009) %>% 
   separate(name...2, c("lname", "rest"), sep = ", ") %>% 
@@ -78,7 +78,7 @@ draft_2009 <- draft_data_full$`2009` %>%
            position == "PK") %>% 
   mutate(player_name = paste(fname, lname, sep = " "),
          player_pick = row_number()) %>% 
-  select(player_name, team, position, player_pick)
+  select(player_name, team, position, player_pick, year)
 draft_2010 <- draft_data_full$`2010` %>% 
   mutate(year = 2010) %>% 
   separate(name, c("lname", "rest"), sep = ", ") %>% 
@@ -90,7 +90,7 @@ draft_2010 <- draft_data_full$`2010` %>%
            position == "PK") %>% 
   mutate(player_name = paste(fname, lname, sep = " "),
          player_pick = row_number()) %>% 
-  select(player_name, team, position, player_pick)
+  select(player_name, team, position, player_pick, year)
 draft_2011 <- draft_data_full$`2011` %>% 
   mutate(year = 2011) %>% 
   separate(name, c("lname", "rest"), sep = ", ") %>% 
@@ -102,7 +102,7 @@ draft_2011 <- draft_data_full$`2011` %>%
            position == "PK") %>% 
   mutate(player_name = paste(fname, lname, sep = " "),
          player_pick = row_number()) %>% 
-  select(player_name, team, position, player_pick)
+  select(player_name, team, position, player_pick, year)
 draft_2012 <- draft_data_full$`2012` %>% 
   mutate(year = 2012) %>% 
   separate(name, c("lname", "rest"), sep = ", ") %>% 
@@ -114,7 +114,7 @@ draft_2012 <- draft_data_full$`2012` %>%
            position == "PK") %>% 
   mutate(player_name = paste(fname, lname, sep = " "),
          player_pick = row_number()) %>% 
-  select(player_name, team, position, player_pick)
+  select(player_name, team, position, player_pick, year)
 draft_2013 <- draft_data_full$`2013` %>% 
   mutate(year = 2013) %>% 
   separate(name, c("lname", "rest"), sep = ", ") %>% 
@@ -126,7 +126,7 @@ draft_2013 <- draft_data_full$`2013` %>%
            position == "PK") %>% 
   mutate(player_name = paste(fname, lname, sep = " "),
          player_pick = row_number()) %>% 
-  select(player_name, team, position, player_pick)
+  select(player_name, team, position, player_pick, year)
 draft_2014 <- draft_data_full$`2014` %>% 
   mutate(year = 2014) %>% 
   separate(name, c("lname", "rest"), sep = ", ") %>% 
@@ -138,7 +138,7 @@ draft_2014 <- draft_data_full$`2014` %>%
            position == "PK") %>% 
   mutate(player_name = paste(fname, lname, sep = " "),
          player_pick = row_number()) %>% 
-  select(player_name, team, position, player_pick)
+  select(player_name, team, position, player_pick, year)
 draft_2015 <- draft_data_full$`2015` %>% 
   mutate(year = 2015) %>% 
   separate(name, c("lname", "rest"), sep = ", ") %>% 
@@ -150,7 +150,7 @@ draft_2015 <- draft_data_full$`2015` %>%
            position == "PK") %>% 
   mutate(player_name = paste(fname, lname, sep = " "),
          player_pick = row_number()) %>% 
-  select(player_name, team, position, player_pick)
+  select(player_name, team, position, player_pick, year)
 draft_2016 <- draft_data_full$`2016` %>% 
   mutate(year = 2016) %>% 
   separate(name, c("lname", "rest"), sep = ", ") %>% 
@@ -162,7 +162,7 @@ draft_2016 <- draft_data_full$`2016` %>%
            position == "PK") %>% 
   mutate(player_name = paste(fname, lname, sep = " "),
          player_pick = row_number()) %>% 
-  select(player_name, team, position, player_pick)
+  select(player_name, team, position, player_pick, year)
 draft_2017 <- draft_data_full$`2017` %>% 
   mutate(year = 2017) %>% 
   separate(name, c("lname", "rest"), sep = ", ") %>% 
@@ -174,7 +174,7 @@ draft_2017 <- draft_data_full$`2017` %>%
            position == "PK") %>% 
   mutate(player_name = paste(fname, lname, sep = " "),
          player_pick = row_number()) %>% 
-  select(player_name, team, position, player_pick)
+  select(player_name, team, position, player_pick, year)
 draft_2018 <- draft_data_full$`2018` %>% 
   mutate(year = 2018) %>% 
   separate(name, c("lname", "rest"), sep = ", ") %>% 
@@ -186,8 +186,8 @@ draft_2018 <- draft_data_full$`2018` %>%
            position == "PK") %>% 
   mutate(player_name = paste(fname, lname, sep = " "),
          player_pick = row_number()) %>% 
-  select(player_name, team, position, player_pick)
+  select(player_name, team, position, player_pick, year)
 
 draft_data <- rbind(draft_2008, draft_2009, draft_2010, draft_2011, draft_2012, draft_2013, draft_2014, draft_2015, draft_2016, draft_2017, draft_2018)
-rio::export(draft_data, "draft_data.csv")
+rio::export(draft_data, "draft_data_new.csv")
 
