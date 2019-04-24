@@ -2,6 +2,7 @@
 library(tidyverse)
 library(readxl) 
 library(purrr)
+library(rio)
 
 #Loading data
 read_excel_allsheets <- function(filename, tibble = TRUE) {
@@ -64,7 +65,8 @@ draft_2008 <- draft_data_full$`2008` %>%
            position == "WR" | 
            position == "TE" | 
            position == "PK") %>% 
-  mutate(player_name = paste(fname, lname, sep = " "),
+  mutate(player_name_temp = paste(fname, lname, sep = " "),
+         player_name = tolower(player_name_temp),
          player_pick = row_number()) %>% 
   select(player_name, team, position, player_pick, year)
 draft_2009 <- draft_data_full$`2009` %>% 
@@ -76,7 +78,8 @@ draft_2009 <- draft_data_full$`2009` %>%
            position == "WR" | 
            position == "TE" | 
            position == "PK") %>% 
-  mutate(player_name = paste(fname, lname, sep = " "),
+  mutate(player_name_temp = paste(fname, lname, sep = " "),
+         player_name = tolower(player_name_temp),
          player_pick = row_number()) %>% 
   select(player_name, team, position, player_pick, year)
 draft_2010 <- draft_data_full$`2010` %>% 
@@ -88,7 +91,8 @@ draft_2010 <- draft_data_full$`2010` %>%
            position == "WR" | 
            position == "TE" | 
            position == "PK") %>% 
-  mutate(player_name = paste(fname, lname, sep = " "),
+  mutate(player_name_temp = paste(fname, lname, sep = " "),
+         player_name = tolower(player_name_temp),
          player_pick = row_number()) %>% 
   select(player_name, team, position, player_pick, year)
 draft_2011 <- draft_data_full$`2011` %>% 
@@ -100,7 +104,8 @@ draft_2011 <- draft_data_full$`2011` %>%
            position == "WR" | 
            position == "TE" | 
            position == "PK") %>% 
-  mutate(player_name = paste(fname, lname, sep = " "),
+  mutate(player_name_temp = paste(fname, lname, sep = " "),
+         player_name = tolower(player_name_temp),
          player_pick = row_number()) %>% 
   select(player_name, team, position, player_pick, year)
 draft_2012 <- draft_data_full$`2012` %>% 
@@ -112,7 +117,8 @@ draft_2012 <- draft_data_full$`2012` %>%
            position == "WR" | 
            position == "TE" | 
            position == "PK") %>% 
-  mutate(player_name = paste(fname, lname, sep = " "),
+  mutate(player_name_temp = paste(fname, lname, sep = " "),
+         player_name = tolower(player_name_temp),
          player_pick = row_number()) %>% 
   select(player_name, team, position, player_pick, year)
 draft_2013 <- draft_data_full$`2013` %>% 
@@ -124,7 +130,8 @@ draft_2013 <- draft_data_full$`2013` %>%
            position == "WR" | 
            position == "TE" | 
            position == "PK") %>% 
-  mutate(player_name = paste(fname, lname, sep = " "),
+  mutate(player_name_temp = paste(fname, lname, sep = " "),
+         player_name = tolower(player_name_temp),
          player_pick = row_number()) %>% 
   select(player_name, team, position, player_pick, year)
 draft_2014 <- draft_data_full$`2014` %>% 
@@ -136,7 +143,8 @@ draft_2014 <- draft_data_full$`2014` %>%
            position == "WR" | 
            position == "TE" | 
            position == "PK") %>% 
-  mutate(player_name = paste(fname, lname, sep = " "),
+  mutate(player_name_temp = paste(fname, lname, sep = " "),
+         player_name = tolower(player_name_temp),
          player_pick = row_number()) %>% 
   select(player_name, team, position, player_pick, year)
 draft_2015 <- draft_data_full$`2015` %>% 
@@ -148,7 +156,8 @@ draft_2015 <- draft_data_full$`2015` %>%
            position == "WR" | 
            position == "TE" | 
            position == "PK") %>% 
-  mutate(player_name = paste(fname, lname, sep = " "),
+  mutate(player_name_temp = paste(fname, lname, sep = " "),
+         player_name = tolower(player_name_temp),
          player_pick = row_number()) %>% 
   select(player_name, team, position, player_pick, year)
 draft_2016 <- draft_data_full$`2016` %>% 
@@ -160,7 +169,8 @@ draft_2016 <- draft_data_full$`2016` %>%
            position == "WR" | 
            position == "TE" | 
            position == "PK") %>% 
-  mutate(player_name = paste(fname, lname, sep = " "),
+  mutate(player_name_temp = paste(fname, lname, sep = " "),
+         player_name = tolower(player_name_temp),
          player_pick = row_number()) %>% 
   select(player_name, team, position, player_pick, year)
 draft_2017 <- draft_data_full$`2017` %>% 
@@ -172,7 +182,8 @@ draft_2017 <- draft_data_full$`2017` %>%
            position == "WR" | 
            position == "TE" | 
            position == "PK") %>% 
-  mutate(player_name = paste(fname, lname, sep = " "),
+  mutate(player_name_temp = paste(fname, lname, sep = " "),
+         player_name = tolower(player_name_temp),
          player_pick = row_number()) %>% 
   select(player_name, team, position, player_pick, year)
 draft_2018 <- draft_data_full$`2018` %>% 
@@ -184,10 +195,12 @@ draft_2018 <- draft_data_full$`2018` %>%
            position == "WR" | 
            position == "TE" | 
            position == "PK") %>% 
-  mutate(player_name = paste(fname, lname, sep = " "),
+  mutate(player_name_temp = paste(fname, lname, sep = " "),
+         player_name = tolower(player_name_temp),
          player_pick = row_number()) %>% 
   select(player_name, team, position, player_pick, year)
 
 draft_data <- rbind(draft_2008, draft_2009, draft_2010, draft_2011, draft_2012, draft_2013, draft_2014, draft_2015, draft_2016, draft_2017, draft_2018)
 rio::export(draft_data, "draft_data_new.csv")
+
 
