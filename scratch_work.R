@@ -1,5 +1,6 @@
 library(rio)
 library(tidyverse)
+library(ggthemes)
 
 full_data <- import("Untitled spreadsheet - full_draft_data.csv")
 full_data[full_data == ""] <- NA
@@ -18,7 +19,7 @@ work_data <- full_data %>%
   ungroup() %>% 
   mutate(waiver = ifelse((is.na(player_pick)), 1, 0)) %>% 
   group_by(year, FantPos) %>% 
-  mutate(sleeper = ifelse(((Fantasy_FantPt >= quantile(Fantasy_FantPt, 0.8)) & (waiver == 1)), 1, 0),
+  mutate(sleeper = ifelse(((Fantasy_FantPt >= quantile(Fantasy_FantPt[waiver == 1], 0.8) & waiver == 1)), 1, 0),
          position_average = mean(Fantasy_FantPt, na.rm = TRUE),
          position_difference = Fantasy_FantPt-position_average,
          position_percent_difference = round((((position_difference)/position_average)*100)),
@@ -35,15 +36,43 @@ work_data$position_percent_difference_waiver[is.na(work_data$position_percent_di
 work_data_1 <- work_data
 
 work_data_2 <- work_data_1 %>% 
-  mutate(player_pick = as.numeric(as.character(player_pick))) %>%
   group_by(player_pick) %>% 
   mutate(pick_average_percent = mean(position_percent_difference),
          pick_average_percent_20 = mean(position_percent_difference_20),
          pick_average_percent_waiver = mean(position_percent_difference_waiver))
 
+ggplot(data = work_data_2, mapping = aes(x = player_pick, y = position_percent_difference)) +
+  geom_point() +
+  scale_x_continuous(name="Draft Pick", breaks = c(1, 24, 48, 72, 96, 120, 144, 168, 192, 216, 240)) +
+  theme_bw()
+
+ggplot(data = work_data_2 %>% filter(!is.na(FantPos)), mapping = aes(x = player_pick, y = position_percent_difference)) +
+  geom_point(aes(colour = FantPos)) +
+  scale_x_continuous(name="Draft Pick", breaks = c(1, 24, 48, 72, 96, 120, 144, 168, 192, 216, 240))
+
+ggplot(data = work_data_2 %>% filter(!is.na(FantPos)), mapping = aes(x = player_pick, y = position_percent_difference)) +
+  geom_point() +
+  facet_wrap(~ FantPos) +
+  scale_x_continuous(name="Draft Pick", breaks = c(1, 24, 48, 72, 96, 120, 144, 168, 192, 216, 240))
+
+ggplot(data = work_data_2 %>% filter(!is.na(FantPos)), mapping = aes(x = player_pick, y = position_percent_difference_20)) +
+  geom_point() +
+  facet_wrap(~ FantPos) +
+  scale_x_continuous(name="Draft Pick", breaks = c(1, 24, 48, 72, 96, 120, 144, 168, 192, 216, 240))
+
+ggplot(data = work_data_2 %>% filter(!is.na(FantPos)), mapping = aes(x = player_pick, y = position_percent_difference_waiver)) +
+  geom_point() +
+  facet_wrap(~ FantPos) +
+  scale_x_continuous(name="Draft Pick", breaks = c(1, 24, 48, 72, 96, 120, 144, 168, 192, 216, 240))
+
 ggplot(data = work_data_2, mapping = aes(x = player_pick, y = pick_average_percent)) +
-  geom_point()
+  geom_point() +
+  scale_x_continuous(name="Draft Pick", breaks = c(1, 24, 48, 72, 96, 120, 144, 168, 192, 216, 240))
+
 ggplot(data = work_data_2, mapping = aes(x = player_pick, y = pick_average_percent_20)) +
-  geom_point()
+  geom_point() +
+  scale_x_continuous(name="Draft Pick", breaks = c(1, 24, 48, 72, 96, 120, 144, 168, 192, 216, 240))
+
 ggplot(data = work_data_2, mapping = aes(x = player_pick, y = pick_average_percent_waiver)) +
-  geom_point()
+  geom_point() +
+  scale_x_continuous(name="Draft Pick", breaks = c(1, 24, 48, 72, 96, 120, 144, 168, 192, 216, 240))
