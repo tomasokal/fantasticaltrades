@@ -1,14 +1,21 @@
+---
+title: "Fantastical Picks and When to Trade Them"
+author: "Tom Okal"
+date: "SatRday, April 27, 2019"
+output: slidy_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
 library(rio)
+library(knitr)
 library(tidyverse)
-library(ggthemes)
+library(kableExtra)
 
 full_data <- import("Untitled spreadsheet - full_draft_data.csv")
 full_data[full_data == ""] <- NA
 full_data[, 26:29][is.na(full_data[, 26:29])] <- 0
-
-check <- full_data %>% 
-  group_by(FantPos) %>% 
-  summarise(count = n())
 
 work_data <- full_data %>% 
   mutate(player_pick = as.numeric(as.character(player_pick))) %>% 
@@ -39,70 +46,14 @@ work_data_2 <- work_data_1 %>%
   group_by(player_pick) %>% 
   mutate(pick_average_percent = mean(position_percent_difference),
          pick_average_percent_20 = mean(position_percent_difference_20),
-         pick_average_percent_waiver = mean(position_percent_difference_waiver))
+         pick_average_percent_waiver = mean(position_percent_difference_waiver)) %>% 
+  arrange(year, player_pick)
 
-ggplot(data = work_data_2, mapping = aes(x = player_pick, y = position_percent_difference)) +
-  geom_point() +
-  labs(title = "Comparison used is average of each position within a year", y = "Percent better than average") +
-  scale_x_continuous(name="Draft Pick", breaks = c(1, 24, 48, 72, 96, 120, 144, 168, 192, 216, 240)) +
-  geom_smooth(se = F) +
-  geom_hline(yintercept = 0, size = 1, color = "red") +
-  theme_minimal(base_size = 18)
+present_data_1 <- work_data_2 %>% 
+  select(year, player_pick, FantPos, Fantasy_FantPt)
 
-ggplot(data = work_data_2 %>% filter(!is.na(FantPos)), mapping = aes(x = player_pick, y = position_percent_difference)) +
-  geom_point(aes(colour = FantPos)) +
-  labs(title = "Comparison used is average of each position within a year", y = "Percent better than average", color = "Position") + 
-  scale_x_continuous(name="Draft Pick", breaks = c(1, 24, 48, 72, 96, 120, 144, 168, 192, 216, 240)) + 
-  geom_hline(yintercept = 0, size = 1, color = "red") +
-  theme_minimal(base_size = 18)
-
-ggplot(data = work_data_2 %>% filter(!is.na(FantPos)), mapping = aes(x = player_pick, y = position_percent_difference)) +
-  geom_point() +
-  facet_wrap(~ FantPos) +
-  geom_smooth(se = F) +
-  labs(title = "Comparison used is average of each position within a year", y = "Percent better than average") +
-  scale_x_continuous(name="Draft Pick", breaks = c(1, 24, 48, 72, 96, 120, 144, 168, 192, 216, 240)) +
-  geom_hline(yintercept = 0, size = 1, color = "red") +
-  theme_minimal(base_size = 18)
-
-ggplot(data = work_data_2 %>% filter(!is.na(FantPos)), mapping = aes(x = player_pick, y = position_percent_difference_20)) +
-  geom_point() +
-  facet_wrap(~ FantPos) +
-  geom_smooth(se = F) +
-  labs(title = "Comparison used is average of top 20% of players of that position within a year", y = "Percent better than average") +
-  scale_x_continuous(name="Draft Pick", breaks = c(1, 24, 48, 72, 96, 120, 144, 168, 192, 216, 240)) + 
-  geom_hline(yintercept = 0, size = 1, color = "red") +
-  theme_minimal()
-
-ggplot(data = work_data_2 %>% filter(!is.na(FantPos)), mapping = aes(x = player_pick, y = position_percent_difference_waiver)) +
-  geom_point() +
-  facet_wrap(~ FantPos) +
-  geom_smooth(se = F) +
-  labs(title = "Comparison used is average of top 20% undrafted players of that position within a year", y = "Percent better than average") +
-  scale_x_continuous(name="Draft Pick", breaks = c(1, 24, 48, 72, 96, 120, 144, 168, 192, 216, 240)) + 
-  geom_hline(yintercept = 0, size = 1, color = "red") +
-  theme_minimal()
-
-ggplot(data = work_data_2, mapping = aes(x = player_pick, y = pick_average_percent)) +
-  geom_point() +
-  labs(title = "Comparison used is average of players within a year", y = "Percent better than average") +
-  scale_x_continuous(name="Draft Pick", breaks = c(1, 24, 48, 72, 96, 120, 144, 168, 192, 216, 240)) +
-  geom_hline(yintercept = 0, size = 1, color = "red") +
-  theme_minimal()
-
-ggplot(data = work_data_2, mapping = aes(x = player_pick, y = pick_average_percent_20)) +
-  geom_point() +
-  labs(title = "Comparison used is average of top 20% of players within a year", y = "Percent better than average") +
-  scale_x_continuous(name="Draft Pick", breaks = c(1, 24, 48, 72, 96, 120, 144, 168, 192, 216, 240)) +
-  geom_hline(yintercept = 0, size = 1, color = "red") +
-  theme_minimal()
-
-ggplot(data = work_data_2, mapping = aes(x = player_pick, y = pick_average_percent_waiver)) +
-  geom_point() +
-  labs(title = "Comparison used is average of top 20% undrafted players within a year", y = "Percent better than average") +
-  scale_x_continuous(name="Draft Pick", breaks = c(1, 24, 48, 72, 96, 120, 144, 168, 192, 216, 240)) +
-  geom_hline(yintercept = 0, size = 1, color = "red") +
-  theme_minimal()
+present_data_2 <- work_data_2 %>% 
+  select(year, player_pick, FantPos, Fantasy_FantPt, position_average, position_difference, position_percent_difference, pick_average_percent)
 
 work_data_3 <- work_data_2 %>% 
   filter(!is.na(player_pick)) %>% 
@@ -115,14 +66,6 @@ work_data_3 <- work_data_2 %>%
   group_by(round) %>% 
   mutate(round_average_percent = mean(pick_average_percent))
 
-ggplot(data = work_data_3, mapping = aes(x = round, y = round_average_percent)) +
-  geom_point() +
-  geom_hline(yintercept = 0, size = 1, color = "red") +
-  labs(title = "Comparison used is average of players within a year", y = "Percent better than average") +
-  scale_x_continuous(name = "Draft Round", breaks = c(1:19)) +
-  geom_smooth() +
-  theme_minimal()
-
 work_data_waiver <- work_data_2 %>% 
   filter(!is.na(player_pick)) %>% 
   arrange(player_pick) %>% 
@@ -134,9 +77,199 @@ work_data_waiver <- work_data_2 %>%
   group_by(round) %>% 
   mutate(round_average_percent = mean(pick_average_percent_waiver))
 
-ggplot(data = work_data_waiver, mapping = aes(x = round, y = round_average_percent)) +
+```
+
+## Problem
+
+Motivation
+
+- Fantasy Football leagues allow trading of picks before a draft.
+
+- "Kyle wants to trade your 2nd overall pick for his 7th overall pick. What other pick would you want to make that trade happen?"
+
+Question
+
+- How to compare the expected value of a draft pick to another given that there are different positions, league sizes, and league rules?
+
+Approach
+
+- By combining the draft position and actual fantasy performance (points scored), we can find how much better they did in comparison to other players.
+
+- By aggregating this, we can find the expected added value of all picks and compare them.
+
+## How to get historical draft position for each player
+
+```{r adp_screenshot, echo=FALSE, fig.align = "center", fig.cap="By using myfantasyleague.com we can get an average draft pick for each player that can be used to create a ranking for each year. ", out.width = '50%'}
+knitr::include_graphics("T:\\Programs\\r_projects\\fantasticaltrades\\adp_screenshot.PNG")
+```
+
+## How to get historical fantasy performance for each player
+
+```{r pfr_screenshot, fig.align = "center", echo=FALSE, fig.cap="By using profootballref.com we can get lots of statistics for how each player did each year. ", out.width = '100%'}
+knitr::include_graphics("T:\\Programs\\r_projects\\fantasticaltrades\\profootballref_screeenshot.PNG")
+```
+
+## Scraping this data 
+
+```{r scrape, echo = TRUE}
+library(profootballref)
+pfr_2018 <- gen_tables(2018) %>% 
+  slice(1:5) %>% 
+  select(Player, FantPos, Fantasy_FantPt, Rushing_Att, Rushing_Yds)
+```
+```{r table1}
+pfr_2018 %>% 
+  kable() %>% 
+  kable_styling(latex_options = "scale_down", font_size = 18)
+```
+
+## Combine data
+
+```{r table2}
+head(present_data_1) %>% 
+  kable(align = "c") %>% 
+  kable_styling(latex_options = "scale_down", font_size = 18)
+```
+
+A total of 6686 players across 4 position types from 2008 to 2018 are combined. **However**, not all players are drafted! In any given year, there are many players that don't get picked, because each fantasy team only has a certain amount of spots to fill. 
+
+## Creating a comparison between players and picks
+
+```{r table3}
+head(present_data_2) %>% 
+  kable(align = "c") %>% 
+  kable_styling(latex_options = "scale_down", font_size = 18)
+```
+
+- To create a comparison between players and between picks, I find the average total fantasy points in each position in each year. Each individual player is then compared to this average to find the percent above average player for every player since 2008. 
+
+- I then also average this percent above average player for each pick across years. 
+
+- The metric to compare players can be changed 
+
+-- I also compare to top 20% of players within a position and year.
+
+-- I also compare to top 20% of undrafted players within a position and year.
+
+## Percent better than average by draft pick
+
+```{r plot1, fig.align = "center", out.width="50%", echo = FALSE, message = FALSE, warning = FALSE}
+ggplot(data = work_data_2, mapping = aes(x = player_pick, y = position_percent_difference)) +
+  geom_point() +
+  labs(title = "Comparison used is average of each position within a year", y = "Percent better than average") +
+  scale_x_continuous(name="Draft Pick", breaks = c(1, 24, 48, 72, 96, 120, 144, 168, 192, 216, 240)) +
+  geom_smooth(se = F) +
+  geom_hline(yintercept = 0, size = 1, color = "red") +
+  theme_minimal()
+```
+
+## Percent better than average by draft pick over position for all years
+
+```{r plot2, fig.align = "center", out.width="50%", echo = FALSE, message = FALSE, warning = FALSE}
+ggplot(data = work_data_2 %>% filter(!is.na(FantPos)), mapping = aes(x = player_pick, y = position_percent_difference)) +
+  geom_point(aes(colour = FantPos)) +
+  labs(title = "Comparison used is average of each position within a year", y = "Percent better than average", color = "Position") + 
+  scale_x_continuous(name="Draft Pick", breaks = c(1, 24, 48, 72, 96, 120, 144, 168, 192, 216, 240)) + 
+  geom_hline(yintercept = 0, size = 1, color = "red") +
+  theme_minimal()
+```
+
+## Percent better than average by draft pick split up by position for all years
+
+```{r plot3, fig.align = "center", out.width="50%", echo = FALSE, message = FALSE, warning = FALSE}
+ggplot(data = work_data_2 %>% filter(!is.na(FantPos)), mapping = aes(x = player_pick, y = position_percent_difference)) +
+  geom_point() +
+  facet_wrap(~ FantPos) +
+  geom_smooth(se = F) +
+  labs(title = "Comparison used is average of each position within a year", y = "Percent better than average") +
+  scale_x_continuous(name="Draft Pick", breaks = c(1, 24, 48, 72, 96, 120, 144, 168, 192, 216, 240)) +
+  geom_hline(yintercept = 0, size = 1, color = "red") +
+  theme_minimal()
+```
+
+## Percent better than average by draft pick split up by position for all years
+
+```{r plot4, fig.align = "center", out.width="50%", echo = FALSE, message = FALSE, warning = FALSE}
+ggplot(data = work_data_2 %>% filter(!is.na(FantPos)), mapping = aes(x = player_pick, y = position_percent_difference_20)) +
+  geom_point() +
+  facet_wrap(~ FantPos) +
+  geom_smooth(se = F) +
+  labs(title = "Comparison used is average of top 20% of players of that position within a year", y = "Percent better than average") +
+  scale_x_continuous(name="Draft Pick", breaks = c(1, 24, 48, 72, 96, 120, 144, 168, 192, 216, 240)) + 
+  geom_hline(yintercept = 0, size = 1, color = "red") +
+  theme_minimal()
+```
+
+## Percent better than average by draft pick split up by position for all years
+
+```{r plot5, fig.align = "center", out.width="50%", echo = FALSE, message = FALSE, warning = FALSE}
+ggplot(data = work_data_2 %>% filter(!is.na(FantPos)), mapping = aes(x = player_pick, y = position_percent_difference_waiver)) +
+  geom_point() +
+  facet_wrap(~ FantPos) +
+  geom_smooth(se = F) +
+  labs(title = "Comparison used is average of top 20% undrafted players of that position within a year", y = "Percent better than average") +
+  scale_x_continuous(name="Draft Pick", breaks = c(1, 24, 48, 72, 96, 120, 144, 168, 192, 216, 240)) + 
+  geom_hline(yintercept = 0, size = 1, color = "red") +
+  theme_minimal()
+```
+
+## Percent better than average by draft pick 
+
+```{r plot6, fig.align = "center", out.width="50%", echo = FALSE, message = FALSE, warning = FALSE}
+ggplot(data = work_data_2, mapping = aes(x = player_pick, y = pick_average_percent)) +
+  geom_point() +
+  labs(title = "Comparison used is average of players within a year", y = "Percent better than average") +
+  scale_x_continuous(name="Draft Pick", breaks = c(1, 24, 48, 72, 96, 120, 144, 168, 192, 216, 240)) +
+  geom_hline(yintercept = 0, size = 1, color = "red") +
+  theme_minimal()
+```
+
+## Percent better than average by draft pick 
+
+```{r plot7, fig.align = "center", out.width="50%", echo = FALSE, message = FALSE, warning = FALSE}
+ggplot(data = work_data_2, mapping = aes(x = player_pick, y = pick_average_percent_20)) +
+  geom_point() +
+  labs(title = "Comparison used is average of top 20% of players within a year", y = "Percent better than average") +
+  scale_x_continuous(name="Draft Pick", breaks = c(1, 24, 48, 72, 96, 120, 144, 168, 192, 216, 240)) +
+  geom_hline(yintercept = 0, size = 1, color = "red") +
+  theme_minimal()
+```
+
+## Percent better than average by draft pick 
+
+```{r plot8, fig.align = "center", out.width="50%", echo = FALSE, message = FALSE, warning = FALSE}
+ggplot(data = work_data_2, mapping = aes(x = player_pick, y = pick_average_percent_waiver)) +
+  geom_point() +
+  labs(title = "Comparison used is average of top 20% undrafted players within a year", y = "Percent better than average") +
+  scale_x_continuous(name="Draft Pick", breaks = c(1, 24, 48, 72, 96, 120, 144, 168, 192, 216, 240)) +
+  geom_hline(yintercept = 0, size = 1, color = "red") +
+  theme_minimal()
+```
+
+## Percent better than average by draft round 
+
+```{r plot9, fig.align = "center", out.width="50%", echo = FALSE, message = FALSE, warning = FALSE}
+ggplot(data = work_data_3, mapping = aes(x = round, y = round_average_percent)) +
   geom_point() +
   geom_hline(yintercept = 0, size = 1, color = "red") +
+  labs(title = "Comparison used is average of players within a year", y = "Percent better than average") +
   scale_x_continuous(name = "Draft Round", breaks = c(1:19)) +
   geom_smooth() +
   theme_minimal()
+```
+
+## Percent better than average by draft round 
+
+```{r plot10, fig.align = "center", out.width="50%", echo = FALSE, message = FALSE, warning = FALSE}
+ggplot(data = work_data_waiver, mapping = aes(x = round, y = round_average_percent)) +
+  geom_point() +
+  geom_hline(yintercept = 0, size = 1, color = "red") +
+  labs(title = "Comparison used is average of top 20% undrafted players within a year", y = "Percent better than average") +
+  scale_x_continuous(name = "Draft Round", breaks = c(1:19)) +
+  geom_smooth() +
+  theme_minimal()
+```
+
+## Thank you for listening!
+
+
